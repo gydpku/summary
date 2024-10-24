@@ -6,16 +6,27 @@ from trl.trainer import ConstantLengthDataset
 from peft import get_peft_model, PromptTuningConfig, TaskType, PromptTuningInit, PeftModel, PeftConfig
 import torch
 import pdb
-data_path='/dccstor/obsidian_llm/yiduo/AgentBench/DAMO-ConvAI/bird/llm/src/2k_op_valid_3_re_sql' #combined_2k_wrong_sql' #1k_no_semantic_sql' #combined_4k_sql' #4.3k_no_semantic_sql' #'/dccstor/obsidian_llm/yiduo/AgentBench/toolbench/data_generator/all_1_robot' #output_first_fixed_generation_medical_procedure' 
-#tokenizer = AutoTokenizer.from_pretrained(model_path)
-#'/dccstor/obsidian_llm/yiduo/lsf/llama-recipes/src/llama_recipes/datasets/all_task_0.5_0.5_val_general_mimic_while'
-model_path='/dccstor/obsidian_llm/yiduo/deepseek-coder-6.7b-base' #h100_data/deepseek-coder-6.7b-basellama-3-8b' #'/dccstor/obsidian_llm/yiduo/gemma_2_9b'
-output_path='/dccstor/obsidian_llm/yiduo/copy_v2/finetuned_models/2k_op_valid_3_re_sql_model' #llama-3-8b-hug-zero-shot-ep-peft-5e-2' #'/dccstor/obsidian_llm/yiduo/gemma_2_9b_1e-5_0.5'
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-seed=2024
+import argparse
 import torch
 import numpy as np
 import random
+
+
+# Argument parser to accept parameters from command-line
+parser = argparse.ArgumentParser(description="Script for transferring paths")
+
+parser.add_argument('--data_path', type=str, required=True, help="Path to the data",default='/dccstor/obsidian_llm/yiduo/AgentBench/DAMO-ConvAI/bird/llm/src/2k_op_valid_3_re_sql')
+parser.add_argument('--model_path', type=str, required=True, help="Path to the model",default='/dccstor/obsidian_llm/yiduo/deepseek-coder-6.7b-base')
+parser.add_argument('--output_path', type=str, required=True, help="Path for output",default='/dccstor/obsidian_llm/yiduo/copy_v2/finetuned_models/2k_op_valid_3_re_sql_model')
+
+# Parse arguments
+args = parser.parse_args()
+
+data_path = args.data_path
+model_path = args.model_path
+output_path = args.output_path
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+seed=2024
 
 def set_seed(seed):
     torch.manual_seed(seed)
